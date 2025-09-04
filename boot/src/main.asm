@@ -9,15 +9,31 @@ _start:
     mov ds, ax
     mov es, ax
     mov ss, ax
+    mov sp, 0x7C00
 
-    mov si, WELCOME_TEXT
+    mov si, WELCOME_MSG
     call print
+
+    mov bx, KERNEL_OFFSET
+    mov dh, 1
+    call disk_load
+
+    mov si, KERNEL_LOADED_MSG
+    call print
+
+    call switch_to_pm
 
     jmp $
 
-%include "src/print"
+%include "src/print.asm"
+%include "src/gdt.asm"
+%include "src/disk.asm"
+%include "src/modes.asm"
 
-WELCOME_TEXT db "Hello world!", 0
+WELCOME_MSG db "Hello world!", 0
+KERNEL_LOADED_MSG db "Kernel loaded!", 0
+
+KERNEL_OFFSET equ 0x1000
 
 times 510-($-$$) db 0
 dw 0xAA55
