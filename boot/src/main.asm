@@ -10,36 +10,14 @@ _start:
     mov es, ax
     mov ss, ax
 
-    mov ah, 0x0E
-    mov al, 'H'
-    int 0x10
-    mov al, 'e'
-    int 0x10
-    mov al, 'l'
-    int 0x10
-    int 0x10
-    mov al, 'o'
-    int 0x10
-    mov al, ' '
-    int 0x10
-    mov al, 'w'
-    int 0x10
-    mov al, 'o'
-    int 0x10
-    mov al, 'r'
-    int 0x10
-    mov al, 'l'
-    int 0x10
-    mov al, 'd'
-    int 0x10
-    mov al, '!'
-    int 0x10
-    mov al, 0x0A
-    int 0x10
-    mov al, 0x0D
-    int 0x10
+    mov si, WELCOME_TEXT
+    call print
 
     jmp $
+
+%include "src/print"
+
+WELCOME_TEXT db "Hello world!", 0
 
 times 510-($-$$) db 0
 dw 0xAA55
