@@ -1,19 +1,31 @@
-GCC=gcc
-GCC_ARGS=-c -m32 -ffreestanding -fno-pic -fno-pie -nostdlib -Iinclude
+CC := cc
+LD := ld
+CFLAGS := -m32 -ffreestanding -fno-pic -fno-pie -nostdlib -Iinclude -MMD -MP
+LDFLAGS := -m elf_i386 -T linker.ld --oformat=binary
 
-LD=ld
-LD_ARGS=-m elf_i386 -T linker.ld --oformat=binary
-
-all: kernel.bin clean
-
-build/kernel.o: src/kernel.c
-	@ mkdir -p build
-	$(GCC) $(GCC_ARGS) -o $@ $<
-
-kernel.bin: build/kernel.o
-	$(LD) $(LD_ARGS) $^ -o $@
-
-clean:
-	rm -rf build
+SRCS := $(wildcard src/*.c)
+OBJS := $(SRCS:src/%.c=build/%.o)
+DEPS := $(OBJS:.o=.d)
 
 .PHONY: all clean
+
+all: build kernel.bin
+
+kernel.bin: $(OBJS)
+	@echo "LD $@"
+	@$(LD) $(LDFLAGS) $^ -o $@
+
+build/%.o: src/%.c
+	@echo "CC $@"
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+build:
+	@mkdir -p $@
+
+clean:
+	@echo "RM build"
+	@rm -rf build
+	@echo "RM kernel.bin"
+	@rm -rf kernel.bin
+
+-include $(DEPS)

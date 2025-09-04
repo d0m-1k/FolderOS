@@ -11,11 +11,15 @@ _start:
     mov ss, ax
     mov sp, 0x7C00
 
+    mov ah, 0x01
+    mov ch, 0x3F
+    int 0x10
+
     mov si, WELCOME_MSG
     call print
 
     mov bx, KERNEL_OFFSET
-    mov dh, 1
+    mov dh, 2
     call disk_load
 
     mov si, KERNEL_LOADED_MSG

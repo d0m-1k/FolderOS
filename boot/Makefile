@@ -1,13 +1,23 @@
-NASM=nasm
-NASM_ARGS=-f bin 
+NASM := nasm
+NASMFLAGS := -f bin -I src/
 
-all: boot.bin clean
+SRCS := $(wildcard src/*.asm)
 
-boot.bin: src/*.asm
-	@ mkdir -p build
-	$(NASM) $(NASM_ARGS) src/main.asm -o $@
+.PHONY: all clean
+
+all: build boot.bin
+
+boot.bin: src/main.asm $(SRCS)
+	@echo "NASM $@"
+	@$(NASM) $(NASMFLAGS) $< -o $@
+
+build:
+	@mkdir -p $@
 
 clean:
-	rm -rf build
+	@echo "RM build"
+	@rm -rf build
+	@echo "RM boot.bin"
+	@rm -rf boot.bin
 
 .PHONY: all clean
