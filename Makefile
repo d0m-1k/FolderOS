@@ -25,5 +25,7 @@ run: floppy.img
 clean:
 	@echo "RM os.bin"
 	@rm -f os.bin
+	@echo "RM floppy.img"
+	@rm -f floppy.img
 	@$(MAKE) -C boot clean
 	@$(MAKE) -C kernel clean
