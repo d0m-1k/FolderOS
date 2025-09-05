@@ -34,9 +34,8 @@ _start:
 %include "src/disk.asm"
 %include "src/modes.asm"
 
-WELCOME_MSG db "Hello world!", 0
-KERNEL_LOADED_MSG db "Kernel loaded!", 0
-
+WELCOME_MSG db "Hello world!", 0x0D, 0x0A, 0
+KERNEL_LOADED_MSG db "Kernel loaded!", 0x0D, 0x0A, 0
 KERNEL_OFFSET equ 0x1000
 
 times 510-($-$$) db 0
