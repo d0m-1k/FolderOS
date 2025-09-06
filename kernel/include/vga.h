@@ -8,8 +8,13 @@
 
 #define clear() fill(' ', 0x0F);
 
+uint32_t get_cursor_x();
+uint32_t get_cursor_y();
+void set_cursor(uint32_t x, uint32_t y);
 void fill(uint8_t c, uint8_t color);
 void print(string str);
-void set_cursor_position(size_t x, size_t y);
+void print_hex(uint32_t);
+void putchar_at(uint8_t c, uint8_t color, uint32_t x, uint32_t y);
+void print_at(string str, uint8_t color, uint32_t x, uint32_t y);
 void scroll();
 void putchar(uint8_t c, uint8_t color);

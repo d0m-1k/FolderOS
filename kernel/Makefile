@@ -1,6 +1,6 @@
 CC := cc
 LD := ld
-CFLAGS := -m32 -ffreestanding -fno-pic -fno-pie -nostdlib -Iinclude -MMD -MP
+CFLAGS := -m32 -ffreestanding -fno-pic -fno-pie -nostdlib -Iinclude -fno-stack-protector -Wall -Wextra -mno-sse -mno-mmx -mno-3dnow -mno-avx -mno-80387
 LDFLAGS := -m elf_i386 -T linker.ld --oformat=binary
 
 SRCS := $(wildcard src/*.c)

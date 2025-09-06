@@ -1,7 +1,15 @@
 ENTRY(_start)
 
-SECTIONS
-{
+SECTIONS {
     . = 0x1000;
-    .text : { *(.text) }
+    .text : {
+        build/kernel.o(.text)
+        *(.text)
+    }
+    .data : {
+        *(.data)
+    }
+    .bss : {
+        *(.bss)
+    }
 }

@@ -12,3 +12,7 @@ typedef unsigned long  uint64_t;
 
 typedef unsigned int   size_t;
 typedef const char*    string;
+typedef char           boolean;
+
+#define true  1
+#define false 0

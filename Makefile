@@ -13,7 +13,7 @@ kernel/kernel.bin:
 
 os.bin: boot/boot.bin kernel/kernel.bin
 	dd if=boot/boot.bin of=$@ bs=512 count=1 status=none
-	dd if=kernel/kernel.bin of=$@ bs=512 seek=1 count=2 status=none
+	dd if=kernel/kernel.bin of=$@ bs=512 seek=1 count=17 status=none
 
 floppy.img: os.bin
 	dd if=/dev/zero of=$@ bs=512 count=2880

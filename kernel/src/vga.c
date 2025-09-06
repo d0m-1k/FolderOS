@@ -3,6 +3,27 @@
 static uint32_t pos_x = 0;
 static uint32_t pos_y = 0;
 
+uint32_t get_cursor_x() {
+    return pos_x;
+}
+
+uint32_t get_cursor_y() {
+    return pos_y;
+}
+
+void set_cursor(uint32_t x, uint32_t y) {
+    if (x >= VGA_SIZE_X) {
+        x = 0;
+        y++;
+    }
+    if (y >= VGA_SIZE_Y) {
+        scroll();
+        y = VGA_SIZE_Y - 1;
+    }
+    pos_x = x;
+    pos_y = y;
+}
+
 void fill(uint8_t c, uint8_t color) {
     uint16_t* vga = (uint16_t*) VGA_ADDRESS;
     for (int i = 0; i < VGA_SIZE_X*VGA_SIZE_Y; i++) {
@@ -13,40 +34,75 @@ void fill(uint8_t c, uint8_t color) {
 }
 
 void print(string str) {
-    uint16_t* vga = (uint16_t*) VGA_ADDRESS;
     for (int i = 0; str[i] != '\0'; i++) {
-        putchar(str[i], 0xFF);
+        putchar(str[i], 0x0F);
+    }
+}
+
+void print_hex(uint32_t num) {
+    string chars = "0123456789ABCDEF";
+    char buf[9];
+    for (int i = 7; i >= 0; i--) {
+        buf[i] = chars[num & 0x0F];
+        num >>= 4;
+    }
+    buf[8] = '\0';
+    print("0x");
+    print(buf);
+}
+
+void putchar_at(uint8_t c, uint8_t color, uint32_t x, uint32_t y) {
+    uint16_t* vga = (uint16_t*) VGA_ADDRESS;
+    if (x < VGA_SIZE_X && y < VGA_SIZE_Y) {
+        vga[y * VGA_SIZE_X + x] = (uint16_t)c | (uint16_t)(color << 8);
+    }
+}
+
+void print_at(string str, uint8_t color, uint32_t x, uint32_t y) {
+    for (int i = 0; str[i] != '\0'; i++) {
+        putchar_at(str[i], color, x + i, y);
     }
 }
 
 void scroll() {
-    if (pos_y < VGA_SIZE_Y) {
-        pos_y++;
-        return;
-    }
-    for (int i = 0; i < VGA_SIZE_Y; i++) {
-        uint16_t* line1 = (uint16_t*) VGA_ADDRESS+(i*VGA_SIZE_X);
-        uint16_t* line2 = (uint16_t*) VGA_ADDRESS+(i*VGA_SIZE_X+1);
-        for (int x = 0; i < VGA_SIZE_X; i++) {
-            line1[x] = line2[x];
+    uint16_t* vga = (uint16_t*) VGA_ADDRESS;
+    for (int y = 0; y < VGA_SIZE_Y-1; y++) {
+        for (int x = 0; x < VGA_SIZE_X; x++) {
+            vga[y * VGA_SIZE_X + x] = vga[(y+1) * VGA_SIZE_X + x];
         }
     }
+    for (int x = 0; x < VGA_SIZE_X; x++) {
+        vga[(VGA_SIZE_Y-1) * VGA_SIZE_X + x] = (uint16_t)' ' | (uint16_t)(0x0F << 8);
+    }
+    pos_x = 0;
+    pos_y = VGA_SIZE_Y-1;
 }
 
 void putchar(uint8_t c, uint8_t color) {
     uint16_t* vga = (uint16_t*) VGA_ADDRESS;
 
-    if (pos_x >= VGA_SIZE_X) {
+    if (c == '\n') {
         pos_x = 0;
-        scroll();
+        pos_y++;
+    } else if (c == '\r') {
+        pos_x = 0;
+    } else if (c == '\b') {
+        if (pos_x > 0) {
+            pos_x--;
+            vga[pos_y * VGA_SIZE_X + pos_x] = (uint16_t)' ' | (uint16_t)(0x0F << 8);
+
+        }
+    } else {
+        vga[pos_y * VGA_SIZE_X + pos_x] = (uint16_t)c | (uint16_t)(color << 8);
+        pos_x++;
     }
 
-    switch (c) {
-    case '\n': scroll(); break;
-    case '\r': pos_x = 0; break;
-    
-    default:
-        vga[pos_y * VGA_SIZE_X + pos_x] = (uint16_t)c | (uint16_t)0x0F00;
-        pos_x++;
-    }   
+    if (pos_x >= VGA_SIZE_X) {
+        pos_x = 0;
+        pos_y++;
+    }
+
+    if (pos_y >= VGA_SIZE_Y) {
+        scroll();
+    }
 }

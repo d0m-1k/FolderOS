@@ -19,7 +19,7 @@ _start:
     call print
 
     mov bx, KERNEL_OFFSET
-    mov dh, 2
+    mov dh, 17
     call disk_load
 
     mov si, KERNEL_LOADED_MSG
