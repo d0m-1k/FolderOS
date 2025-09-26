@@ -1,23 +1,26 @@
 NASM := nasm
-NASMFLAGS := -f bin -I src/
+NASMFLAGS := -f bin -I src/ -Wall
+BUILD_DIR := build
 
 SRCS := $(wildcard src/*.asm)
+OBJS := $(SRCS:src/%.asm=${BUILD_DIR}/%.o)
 
 .PHONY: all clean
 
-all: build boot.bin
+all: boot.bin
 
-boot.bin: src/main.asm $(SRCS)
-	@echo "NASM $@"
-	@$(NASM) $(NASMFLAGS) $< -o $@
+boot.bin: src/main.asm ${SRCS} | ${BUILD_DIR}
+	@echo "Компиляция загрузчика..."
+	@${NASM} ${NASMFLAGS} $< -o $@
+	@if [ $$(stat -c%s $@) -gt 512 ]; then \
+		echo "Ошибка: Загрузчик превышает 512 байт"; \
+		exit 1; \
+	fi
+	@echo "Размер загрузчика: $$(stat -c%s $@) байт"
 
-build:
+${BUILD_DIR}:
 	@mkdir -p $@
 
 clean:
-	@echo "RM build"
-	@rm -rf build
-	@echo "RM boot.bin"
-	@rm -rf boot.bin
-
-.PHONY: all clean
+	@echo "Очистка загрузчика..."
+	@rm -rf ${BUILD_DIR} boot.bin
