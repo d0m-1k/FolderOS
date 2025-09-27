@@ -13,7 +13,6 @@ void serial_init(void) {
 }
 
 void serial_putc(char c) {
-    // while ((inb(COM1_PORT + 5) & 0x20) == 0);
     outb(COM1_PORT, c);
 }
 

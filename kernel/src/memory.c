@@ -1,5 +1,4 @@
 #include "memory.h"
-#include "vga.h"
 
 static uint8_t* memory_bitmap;
 static uint32_t total_pages;

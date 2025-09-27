@@ -1,5 +1,5 @@
 QEMU := qemu-system-i386
-QEMU_ARGS := -fda floppy.img -serial stdio -m 1G
+QEMU_ARGS := -fda floppy.img -serial stdio -m 1G -vga vmware 
 KERNEL_SECTORS := 21
 FLOPPY_SECTORS := 2880
 

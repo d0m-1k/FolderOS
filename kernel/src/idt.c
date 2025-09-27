@@ -1,5 +1,4 @@
 #include "idt.h"
-#include "vga.h"
 #include "keyboard.h"
 #include "timer.h"
 
@@ -59,7 +58,6 @@ isr(33)     //
 #undef isr_err
 
 void __attribute__((interrupt)) default_handler(void*) {
-    print("Unhandled exception\n");
     while(1);
 }
 
@@ -90,10 +88,6 @@ void idt_handler(uint8_t num, uint32_t err_code) {
     } else if (handler_address != 0) {
         void (*handler)(uint8_t, uint32_t) = (void (*)(uint8_t, uint32_t)) handler_address;
         handler(num, err_code);
-    } else {
-        print("Interrupt: ");
-        print_hex8e(num);
-        print("\n");
     }
 }
 

@@ -19,6 +19,9 @@ _start:
     call print
 
     call get_memory_map
+    
+    mov ax, 0x0013
+    int 0x10
 
     mov bx, KERNEL_OFFSET
     mov dh, 21

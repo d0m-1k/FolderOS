@@ -1,6 +1,5 @@
 #include "kernel.h"
 #include "types.h"
-#include "vga.h"
 #include "idt.h"
 #include "ports.h"
 #include "keyboard.h"
@@ -8,25 +7,18 @@
 #include "timer.h"
 #include "serial.h"
 #include "memory.h"
+#include "video.h"
 
 void on_error(uint8_t num, uint32_t code);
 
 void _start() {
-    clear();
-    print("Starting OS!\n");
-
     init_idt();
     init_timer();
     init_keyboard();
     idt_set_handler((uint32_t) on_error);
     serial_init();
     memory_init();
-
-    print("Memory: ");
-    print_dec(get_total_memory()/1024/1024);
-    print("MB\n");
-
-    sleep(1000);
+    init_video();
 
     run_shell();
 
@@ -34,9 +26,5 @@ void _start() {
 }
 
 void on_error(uint8_t num, uint32_t code) {
-    print("on_error(");
-    print_hex8e(num);
-    print(", ");
-    print_hex32e(code);
-    print(");\n");
+    serial_puts("Exception\r\n");
 }

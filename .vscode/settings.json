@@ -3,6 +3,12 @@
         "types.h": "c",
         "cstdint": "c",
         "ratio": "c",
-        "memory.h": "c"
+        "memory.h": "c",
+        "keyboard.h": "c",
+        "shell.h": "c",
+        "video.h": "c",
+        "timer.h": "c",
+        "kernel.h": "c",
+        "idt.h": "c"
     }
 }
