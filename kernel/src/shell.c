@@ -80,8 +80,6 @@ void execute_command() {
     } else if (strncmp(input_buffer, "echo", 4) == 0) {
         print(input_buffer + 5);
         print("\n");
-    } else if (strcmp(input_buffer, "exit") == 0) {
-        return;
     } else if (input_length > 0) {
         print("Unknown command: ");
         print(input_buffer);

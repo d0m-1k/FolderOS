@@ -1,7 +1,7 @@
 ENTRY(_start)
 
 SECTIONS {
-    . = 0x1000;
+    . = 0x2000;
     .text : {
         build/kernel.o(.text)
         *(.text)
@@ -12,4 +12,6 @@ SECTIONS {
     .bss : {
         *(.bss)
     }
+    . = ALIGN(4);
+    _enda = .;
 }

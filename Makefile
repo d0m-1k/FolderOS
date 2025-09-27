@@ -1,6 +1,6 @@
 QEMU := qemu-system-i386
-QEMU_ARGS := -fda floppy.img -serial stdio
-KERNEL_SECTORS := 17
+QEMU_ARGS := -fda floppy.img -serial stdio -m 1G
+KERNEL_SECTORS := 21
 FLOPPY_SECTORS := 2880
 
 .PHONY: all run clean debug boot kernel

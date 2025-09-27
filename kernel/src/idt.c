@@ -32,28 +32,28 @@ void idt_load(uint32_t idt_ptr) {
 #define isr(n) void __attribute__((interrupt)) i##n(void*) { idt_handler(n, 0); }
 #define isr_err(n) void __attribute__((interrupt)) i##n(void*, uint32_t err_code) { idt_handler(n, err_code); }
 
-isr(0)
-isr(1)
-isr(2)
-isr(3)
-isr(4)
-isr(5)
-isr(6)
-isr(7)
-isr_err(8)
-isr(9)
-isr_err(10)
-isr_err(11)
-isr_err(12)
-isr_err(13)
-isr_err(14)
-isr(15)
-isr(16)
-isr_err(17)
-isr(18)
-isr(19)
-isr(32)
-isr(33)
+isr(0)      // 
+isr(1)      // 
+isr(2)      // 
+isr(3)      // 
+isr(4)      // 
+isr(5)      // 
+isr(6)      // Неверный opcode
+isr(7)      // 
+isr_err(8)  // 
+isr(9)      // 
+isr_err(10) // 
+isr_err(11) // 
+isr_err(12) // 
+isr_err(13) // 
+isr_err(14) // 
+isr(15)     // 
+isr(16)     // 
+isr_err(17) // 
+isr(18)     // 
+isr(19)     // 
+isr(32)     // 
+isr(33)     // 
 
 #undef isr
 #undef isr_err
@@ -92,7 +92,7 @@ void idt_handler(uint8_t num, uint32_t err_code) {
         handler(num, err_code);
     } else {
         print("Interrupt: ");
-        print_hex(num);
+        print_hex8e(num);
         print("\n");
     }
 }

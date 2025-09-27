@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "types.h": "c",
+        "cstdint": "c",
+        "ratio": "c",
+        "memory.h": "c"
+    }
+}

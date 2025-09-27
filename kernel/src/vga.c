@@ -1,4 +1,5 @@
 #include "vga.h"
+#include "serial.h"
 
 static uint32_t pos_x = 0;
 static uint32_t pos_y = 0;
@@ -39,18 +40,38 @@ void print(string str) {
     }
 }
 
-void print_hex(uint32_t num) {
+void print_hex(uint32_t num, uint8_t size) {
     string chars = "0123456789ABCDEF";
-    char buf[9];
-    for (int i = 7; i >= 0; i--) {
-        buf[i] = chars[num & 0x0F];
+    char buf[size + 1];
+    int pos = 0;
+    for (int i = size - 1; i >= 0; i--) {
+        buf[pos + i] = chars[num & 0x0F];
         num >>= 4;
     }
-    buf[8] = '\0';
-    print("0x");
+    pos += size;
+    buf[pos] = '\0';
     print(buf);
 }
 
+void print_dec(uint32_t num) {
+    uint32_t temp = num;
+    uint8_t digits = 0;
+    
+    do {
+        digits++;
+        temp /= 10;
+    } while (temp > 0);
+    
+    char buf[digits + 1];
+    
+    buf[digits] = '\0';
+    for (int i = digits - 1; i >= 0; i--) {
+        buf[i] = '0' + (num % 10);
+        num /= 10;
+    }
+    
+    print(buf);
+}
 void putchar_at(uint8_t c, uint8_t color, uint32_t x, uint32_t y) {
     uint16_t* vga = (uint16_t*) VGA_ADDRESS;
     if (x < VGA_SIZE_X && y < VGA_SIZE_Y) {
@@ -84,22 +105,26 @@ void putchar(uint8_t c, uint8_t color) {
     if (c == '\n') {
         pos_x = 0;
         pos_y++;
+        serial_putc(c);
     } else if (c == '\r') {
         pos_x = 0;
+        serial_putc(c);
     } else if (c == '\b') {
         if (pos_x > 0) {
             pos_x--;
             vga[pos_y * VGA_SIZE_X + pos_x] = (uint16_t)' ' | (uint16_t)(0x0F << 8);
-
+            serial_puts("\b \b");
         }
     } else {
         vga[pos_y * VGA_SIZE_X + pos_x] = (uint16_t)c | (uint16_t)(color << 8);
+        serial_putc(c);
         pos_x++;
     }
 
     if (pos_x >= VGA_SIZE_X) {
         pos_x = 0;
         pos_y++;
+        serial_putc('\n');
     }
 
     if (pos_y >= VGA_SIZE_Y) {

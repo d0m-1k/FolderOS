@@ -18,8 +18,10 @@ _start:
     mov si, WELCOME_MSG
     call print
 
+    call get_memory_map
+
     mov bx, KERNEL_OFFSET
-    mov dh, 17
+    mov dh, 21
     call disk_load
 
     mov si, KERNEL_LOADED_MSG
@@ -32,11 +34,12 @@ _start:
 %include "src/print.asm"
 %include "src/gdt.asm"
 %include "src/disk.asm"
+%include "src/memory.asm"
 %include "src/modes.asm"
 
 WELCOME_MSG db "Hello world!", 0x0D, 0x0A, 0
 KERNEL_LOADED_MSG db "Kernel loaded!", 0x0D, 0x0A, 0
-KERNEL_OFFSET equ 0x1000
+KERNEL_OFFSET equ 0x2000
 
 times 510-($-$$) db 0
 dw 0xAA55
